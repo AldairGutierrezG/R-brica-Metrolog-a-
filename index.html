@@ -78,7 +78,6 @@ th{
 td:first-child, th:first-child{
     width:25%;
     word-wrap: break-word;
-    white-space: normal;
 }
 
 /* INPUTS */
@@ -115,14 +114,22 @@ select{
 .suficiente{background:#f1c40f;color:black;}
 .deficiente{background:#e74c3c;}
 
-/* FIRMA */
-#firmaCanvas{
+/* FIRMA (oculta en pantalla) */
+.firma-container{
+    display:none;
+    text-align:center;
+    margin-top:40px;
+}
+
+.firma{
+    max-width:300px;
     width:100%;
-    max-width:400px;
-    height:150px;
-    border:2px dashed #1e7f5c;
-    border-radius:10px;
-    background:white;
+}
+
+.linea-firma{
+    width:250px;
+    margin:10px auto;
+    border-top:2px solid black;
 }
 
 /* FOOTER */
@@ -150,6 +157,11 @@ select{
     body{background:white;}
     .card{box-shadow:none; border:1px solid #ccc;}
     .footer{position:static;}
+
+    /* MOSTRAR FIRMA SOLO EN PDF */
+    .firma-container{
+        display:block;
+    }
 }
 </style>
 </head>
@@ -165,7 +177,7 @@ select{
 </div>
 
 <center>
-<button onclick="generarPDF()" class="btn-pdf">📄 Generar PDF</button>
+<button onclick="window.print()" class="btn-pdf">📄 Generar PDF</button>
 </center>
 
 <div class="container">
@@ -198,8 +210,8 @@ select{
 <div class="card">
     <h3>Descripción de Niveles</h3>
     <div class="legend">
-        <div class="excelente">Excelente (10)<br>Desempeño completo y autónomo.</div>
-        <div class="bueno">Bueno (8)<br>Buen desempeño con mínimos errores.</div>
+        <div class="excelente">Excelente (10)<br>Desempeño completo.</div>
+        <div class="bueno">Bueno (8)<br>Buen desempeño.</div>
         <div class="suficiente">Suficiente (6)<br>Cumple parcialmente.</div>
         <div class="deficiente">Deficiente (4)<br>No cumple.</div>
     </div>
@@ -219,7 +231,16 @@ select{
 </tr>
 
 <script>
-const criterios = ["Preparación y comprensión del sistema","Armado del sistema","Configuración de válvulas y controlador","Uso de instrumentos","Toma de datos","Seguridad","Trabajo en equipo","Análisis"];
+const criterios = [
+"Preparación",
+"Armado",
+"Configuración",
+"Instrumentos",
+"Datos",
+"Seguridad",
+"Trabajo en equipo",
+"Análisis"
+];
 
 document.write(criterios.map(c=>`
 <tr>
@@ -242,14 +263,13 @@ document.write(criterios.map(c=>`
 </table>
 
 <h3>Promedio: <span id="total">0</span></h3>
-
 </div>
 
-<!-- FIRMA -->
-<div class="card">
-    <h3>Firma del Docente</h3>
-    <canvas id="firmaCanvas"></canvas><br><br>
-    <button onclick="limpiarFirma()" class="btn-pdf">🧹 Limpiar Firma</button>
+<!-- FIRMA SOLO PDF -->
+<div class="firma-container">
+    <img src="firma.png" class="firma">
+    <div class="linea-firma"></div>
+    <p><b>Ing. Braulio Aldair Gutierrez G.</b></p>
 </div>
 
 </div>
@@ -277,59 +297,6 @@ function calcular(select){
 
     let promedio = contador > 0 ? (total / contador).toFixed(2) : 0;
     document.getElementById("total").innerText = promedio;
-}
-
-function generarPDF(){
-    window.print();
-}
-
-/* FIRMA */
-const canvas = document.getElementById("firmaCanvas");
-const ctx = canvas.getContext("2d");
-let dibujando = false;
-
-canvas.width = canvas.offsetWidth;
-canvas.height = canvas.offsetHeight;
-
-canvas.addEventListener("mousedown", ()=> dibujando = true);
-canvas.addEventListener("mouseup", ()=> dibujando = false);
-canvas.addEventListener("mouseleave", ()=> dibujando = false);
-canvas.addEventListener("mousemove", dibujar);
-
-canvas.addEventListener("touchstart", ()=> dibujando = true);
-canvas.addEventListener("touchend", ()=> dibujando = false);
-canvas.addEventListener("touchmove", dibujarTouch);
-
-function dibujar(e){
-    if(!dibujando) return;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#000";
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.offsetX, e.offsetY);
-}
-
-function dibujarTouch(e){
-    e.preventDefault();
-    if(!dibujando) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.touches[0].clientX - rect.left;
-    const y = e.touches[0].clientY - rect.top;
-
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#000";
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-}
-
-function limpiarFirma(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 </script>
 
