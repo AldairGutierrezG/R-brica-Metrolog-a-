@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rúbrica P3 - Energía Solar</title>
+
+<style>
+body{
+    font-family: 'Segoe UI', sans-serif;
+    margin:0;
+    padding-bottom:60px;
+    background: radial-gradient(circle at top, #1e7f5c, #0f2027);
+    color:#333;
+}
+
+/* HEADER */
+.header{
+    background:white;
+    padding:20px;
+    text-align:center;
+    position:relative;
+    border-bottom:5px solid #1e7f5c;
+}
+.logo{
+    position:absolute;
+    top:10px;
+    height:70px;
+}
+.logo.left{left:10px;}
+.logo.right{right:10px;}
+
+h1{color:#1e7f5c; margin:5px;}
+h2{color:#2c5364; margin:5px;}
+
+/* BOTÓN PDF */
+.btn-pdf{
+    background:#f39c12;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    font-size:16px;
+    border-radius:8px;
+    cursor:pointer;
+    margin:15px;
+}
+
+/* CONTENEDOR */
+.container{
+    padding:20px;
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* TABLA */
+table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout: fixed;
+}
+th, td{
+    padding:8px;
+    border:1px solid #ccc;
+    text-align:center;
+}
+th{
+    background:#1e7f5c;
+    color:white;
+}
+
+td:first-child, th:first-child{
+    width:25%;
+    word-wrap: break-word;
+    white-space: normal;
+}
+
+/* INPUTS */
+input{
+    width:90%;
+    padding:5px;
+}
+
+/* SELECT */
+select{
+    width:100%;
+    padding:6px;
+    border-radius:6px;
+}
+
+/* RESULTADO */
+.resultado{
+    font-weight:bold;
+}
+
+/* DESCRIPCIONES */
+.legend{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+.legend div{
+    padding:10px;
+    border-radius:8px;
+    color:white;
+}
+.excelente{background:#2ecc71;}
+.bueno{background:#3498db;}
+.suficiente{background:#f1c40f;color:black;}
+.deficiente{background:#e74c3c;}
+
+/* FIRMA */
+#firmaCanvas{
+    width:100%;
+    max-width:400px;
+    height:150px;
+    border:2px dashed #1e7f5c;
+    border-radius:10px;
+    background:white;
+}
+
+/* FOOTER */
+.footer{
+    background:#1e7f5c;
+    color:white;
+    text-align:center;
+    padding:10px;
+    position:fixed;
+    bottom:0;
+    width:100%;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px){
+    .legend{grid-template-columns:1fr;}
+    table{display:block; overflow-x:auto; font-size:12px;}
+    input, select{font-size:12px;}
+    .logo{height:50px;}
+}
+
+/* PRINT */
+@media print{
+    .btn-pdf{display:none;}
+    body{background:white;}
+    .card{box-shadow:none; border:1px solid #ccc;}
+    .footer{position:static;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <img src="logo1.png" class="logo left">
+    <img src="logo2.png" class="logo right">
+    <h1>TSU en Energía Turbo Solar</h1>
+    <h2>Ing. Braulio Aldair Gutierrez G.</h2>
+</div>
+
+<center>
+<button onclick="generarPDF()" class="btn-pdf">📄 Generar PDF</button>
+</center>
+
+<div class="container">
+
+<!-- DATOS -->
+<div class="card">
+    <h3>Datos de la Práctica</h3>
+    <input placeholder="Nombre de la práctica"><br><br>
+    <input placeholder="Materia"><br><br>
+    <input type="date">
+</div>
+
+<!-- INTEGRANTES -->
+<div class="card">
+    <h3>Integrantes</h3>
+    <table>
+        <tr><th>#</th><th>Nombre</th></tr>
+        <tr><td>1</td><td><input></td></tr>
+        <tr><td>2</td><td><input></td></tr>
+        <tr><td>3</td><td><input></td></tr>
+        <tr><td>4</td><td><input></td></tr>
+        <tr><td>5</td><td><input></td></tr>
+        <tr><td>6</td><td><input></td></tr>
+        <tr><td>7</td><td><input></td></tr>
+        <tr><td>8</td><td><input></td></tr>
+    </table>
+</div>
+
+<!-- NIVELES -->
+<div class="card">
+    <h3>Descripción de Niveles</h3>
+    <div class="legend">
+        <div class="excelente">Excelente (10)<br>Desempeño completo y autónomo.</div>
+        <div class="bueno">Bueno (8)<br>Buen desempeño con mínimos errores.</div>
+        <div class="suficiente">Suficiente (6)<br>Cumple parcialmente.</div>
+        <div class="deficiente">Deficiente (4)<br>No cumple.</div>
+    </div>
+</div>
+
+<!-- RUBRICA -->
+<div class="card">
+<h3>Evaluación</h3>
+
+<table>
+<tr>
+<th>Criterio</th>
+<th>Integrante</th>
+<th>Aporte</th>
+<th>Calificación</th>
+<th>Puntos</th>
+</tr>
+
+<script>
+const criterios = ["Preparación y comprensión del sistema","Armado del sistema","Configuración de válvulas y controlador","Uso de instrumentos","Toma de datos","Seguridad","Trabajo en equipo","Análisis"];
+
+document.write(criterios.map(c=>`
+<tr>
+<td>${c}</td>
+<td><input></td>
+<td><input></td>
+<td>
+<select onchange="calcular(this)">
+<option value="0">Seleccionar</option>
+<option value="10">Excelente</option>
+<option value="8">Bueno</option>
+<option value="6">Suficiente</option>
+<option value="4">Deficiente</option>
+</select>
+</td>
+<td class="resultado">0</td>
+</tr>`).join(""));
+</script>
+
+</table>
+
+<h3>Promedio: <span id="total">0</span></h3>
+
+</div>
+
+<!-- FIRMA -->
+<div class="card">
+    <h3>Firma del Docente</h3>
+    <canvas id="firmaCanvas"></canvas><br><br>
+    <button onclick="limpiarFirma()" class="btn-pdf">🧹 Limpiar Firma</button>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+Universidad Tecnológica de la Laguna Durango | Mediciones Termodinámicas
+</footer>
+
+<script>
+function calcular(select){
+    let fila = select.parentElement.parentElement;
+    fila.querySelector(".resultado").innerText = select.value;
+
+    let total = 0;
+    let contador = 0;
+
+    document.querySelectorAll(".resultado").forEach(el=>{
+        let valor = parseInt(el.innerText);
+        if(valor > 0){
+            total += valor;
+            contador++;
+        }
+    });
+
+    let promedio = contador > 0 ? (total / contador).toFixed(2) : 0;
+    document.getElementById("total").innerText = promedio;
+}
+
+function generarPDF(){
+    window.print();
+}
+
+/* FIRMA */
+const canvas = document.getElementById("firmaCanvas");
+const ctx = canvas.getContext("2d");
+let dibujando = false;
+
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
+
+canvas.addEventListener("mousedown", ()=> dibujando = true);
+canvas.addEventListener("mouseup", ()=> dibujando = false);
+canvas.addEventListener("mouseleave", ()=> dibujando = false);
+canvas.addEventListener("mousemove", dibujar);
+
+canvas.addEventListener("touchstart", ()=> dibujando = true);
+canvas.addEventListener("touchend", ()=> dibujando = false);
+canvas.addEventListener("touchmove", dibujarTouch);
+
+function dibujar(e){
+    if(!dibujando) return;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+function dibujarTouch(e){
+    e.preventDefault();
+    if(!dibujando) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = e.touches[0].clientX - rect.left;
+    const y = e.touches[0].clientY - rect.top;
+
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+}
+
+function limpiarFirma(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+</script>
+
+</body>
+</html>
